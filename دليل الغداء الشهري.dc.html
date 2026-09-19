@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/tokens/colors.css">
+<link rel="stylesheet" href="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/tokens/typography.css">
+<link rel="stylesheet" href="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/styles.css">
+<script src="_ds/elm-design-d74325d1-c59b-444c-ac93-30ad9d1c2245/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0;background:var(--surface-sunken)}
+*{box-sizing:border-box}
+a{color:var(--link-color);text-decoration:none}
+a:hover{color:var(--link-hover);text-decoration:underline}
+input,textarea,button{font-family:inherit}
+@keyframes popIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</helmet>
+<div dir="rtl" style="font-family:var(--font-body);color:var(--text-primary);min-height:100vh;background:var(--surface-sunken)">
+
+  <div style="background:var(--color-navy-900);color:var(--color-white);padding:24px 32px 32px">
+    <div style="max-width:1180px;margin:0 auto 20px;display:flex;justify-content:flex-start">
+      <img src="assets/logo.svg" alt="Elm" style="height:30px;width:auto;filter:brightness(0) invert(1)">
+    </div>
+    <div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:24px;align-items:flex-end;justify-content:space-between">
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <h1 style="margin:0;font-size:38px;font-weight:700;line-height:1.2">دليل طلعات الغداء الشهرية</h1>
+        <p style="margin:0;font-size:16px;font-weight:300;color:#bcc8de;max-width:560px;line-height:1.7"></p>
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width:1180px;margin:0 auto;padding:24px 32px 64px">
+
+    <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px">
+      <div style="display:flex;flex-wrap:wrap;gap:12px;align-items:center">
+        <input type="search" value="{{ query }}" onChange="{{ onQuery }}" placeholder="ابحث عن مكان…" style="width:230px;font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border-strong);color:var(--text-primary);background:var(--surface-page);outline:none">
+        <div style="display:flex;gap:4px;background:var(--gray-100);padding:4px;border-radius:var(--radius-md)">
+          <sc-for list="{{ filters }}" as="f" hint-placeholder-count="3">
+            <button onClick="{{ f.onClick }}" style="border:0;cursor:pointer;padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;background:{{ f.bg }};color:{{ f.fg }}">{{ f.label }}</button>
+          </sc-for>
+        </div>
+        <div style="display:flex;gap:4px;background:var(--gray-100);padding:4px;border-radius:var(--radius-md)">
+          <sc-for list="{{ sorts }}" as="s" hint-placeholder-count="2">
+            <button onClick="{{ s.onClick }}" style="border:0;cursor:pointer;padding:6px 14px;border-radius:var(--radius-sm);font-size:13px;font-weight:500;background:{{ s.bg }};color:{{ s.fg }}">{{ s.label }}</button>
+          </sc-for>
+        </div>
+      </div>
+      <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="primary" size="md" on-click="{{ openSuggest }}" hint-size="180px,40px">+ اقترح مكاناً جديداً</x-import>
+    </div>
+
+    <div style="background:var(--surface-card);border:1px solid var(--border-default);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow-sm)">
+      <div style="display:grid;grid-template-columns:minmax(0,2.3fr) 110px 170px 130px 130px;gap:16px;padding:14px 22px;background:var(--surface-sunken);border-bottom:1px solid var(--border-default);font-size:12px;font-weight:500;letter-spacing:.04em;color:var(--text-secondary)">
+        <div>المكان · Place</div>
+        <div>التصنيف</div>
+        <div>التقييم</div>
+        <div>الموقع</div>
+        <div></div>
+      </div>
+      <sc-for list="{{ rows }}" as="row" hint-placeholder-count="8">
+        <div style="display:grid;grid-template-columns:minmax(0,2.3fr) 110px 170px 130px 130px;gap:16px;padding:16px 22px;border-bottom:1px solid var(--border-default);align-items:center" style-hover="background:var(--gray-25)">
+          <div style="display:flex;flex-direction:column;gap:3px;min-width:0">
+            <div style="font-size:16px;font-weight:500;line-height:1.3">{{ row.name }}</div>
+            <div dir="ltr" style="font-size:12px;font-weight:300;color:var(--text-muted);text-align:right">{{ row.en }}</div>
+          </div>
+          <div>
+            <x-import component-from-global-scope="ElmDesignSystem_d74325.Badge" tone="{{ row.tone }}" hint-size="70px,22px">{{ row.category }}</x-import>
+          </div>
+          <div style="display:flex;flex-direction:column;gap:3px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <span style="font-size:15px;color:var(--color-orange-500);letter-spacing:1px">{{ row.starText }}</span>
+              <span style="font-size:14px;font-weight:500;color:var(--text-primary)">{{ row.avgText }}</span>
+            </div>
+            <div style="font-size:12px;font-weight:300;color:var(--text-muted)">{{ row.countText }}</div>
+          </div>
+          <div>
+            <sc-if value="{{ row.hasLink }}" hint-placeholder-val="{{ true }}">
+              <a href="{{ row.url }}" target="_blank" rel="noopener" style="font-size:14px;font-weight:400">فتح الخريطة ↗</a>
+            </sc-if>
+            <sc-if value="{{ row.hasPhone }}" hint-placeholder-val="{{ false }}">
+              <span dir="ltr" style="font-size:14px;font-weight:300;color:var(--text-secondary)">{{ row.phone }}</span>
+            </sc-if>
+          </div>
+          <div style="display:flex;justify-content:flex-start">
+            <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="secondary" size="sm" on-click="{{ row.onRate }}" hint-size="70px,32px">قيّم</x-import>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ isEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="padding:48px 22px;text-align:center;font-size:15px;font-weight:300;color:var(--text-muted)">لا توجد نتائج مطابقة للبحث.</div>
+      </sc-if>
+    </div>
+
+    <p style="margin:20px 2px 0;font-size:13px;font-weight:300;color:var(--text-secondary);line-height:var(--leading-relaxed)">
+      القائمة للإضافة فقط: يمكن لأي موظف إضافة تقييم أو اقتراح مكان جديد، ولا يمكن تعديل أو حذف تقييمات الآخرين.
+      <br>
+      <span dir="ltr" style="display:inline-block">Add-only: anyone can add a rating or suggest a place. Existing entries can't be edited or deleted.</span>
+    </p>
+  </div>
+
+  <sc-if value="{{ rateOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:oklch(0.15 0.04 267/.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:50">
+      <div onClick="{{ stop }}" dir="rtl" style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:100%;max-width:520px;padding:24px;animation:popIn var(--duration-base) var(--ease-standard);font-family:var(--font-body);color:var(--text-primary)">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:20px">
+          <div style="display:flex;flex-direction:column;gap:4px">
+            <div style="font-size:13px;color:var(--text-muted);font-weight:300">تقييم مكان</div>
+            <div style="font-size:22px;font-weight:700">{{ activeName }}</div>
+          </div>
+          <span onClick="{{ closeModal }}" style="cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1">×</span>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
+          <span style="font-size:13px;color:var(--text-secondary)">التقييم العام</span>
+          <div style="display:flex;gap:6px;align-items:center">
+            <sc-for list="{{ starPicker }}" as="st" hint-placeholder-count="5">
+              <button onClick="{{ st.onClick }}" style="border:0;background:transparent;cursor:pointer;font-size:34px;line-height:1;padding:0;color:{{ st.color }}">★</button>
+            </sc-for>
+            <span style="margin-right:10px;font-size:14px;font-weight:300;color:var(--text-secondary)">{{ pickedLabel }}</span>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:20px">
+          <span style="font-size:13px;color:var(--text-secondary)">هل نكررها؟</span>
+          <div style="display:flex;gap:8px">
+            <sc-for list="{{ repeatOpts }}" as="r" hint-placeholder-count="2">
+              <button onClick="{{ r.onClick }}" style="cursor:pointer;padding:10px 20px;border-radius:var(--radius-md);font-size:14px;font-weight:500;white-space:nowrap;border:1px solid {{ r.border }};background:{{ r.bg }};color:{{ r.fg }}">{{ r.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px">
+          <span style="font-size:13px;color:var(--text-secondary)">تعليق قصير (اختياري)</span>
+          <textarea value="{{ comment }}" onChange="{{ onComment }}" rows="3" placeholder="مثال: الأكل ممتاز والجلسات الخارجية مريحة" style="width:100%;font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border-strong);color:var(--text-primary);background:var(--surface-page);resize:vertical;outline:none"></textarea>
+        </div>
+
+        <div style="display:flex;gap:10px;justify-content:flex-start">
+          <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="primary" size="lg" on-click="{{ submitRating }}" hint-size="150px,46px">{{ submitLabel }}</x-import>
+          <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="ghost" size="lg" on-click="{{ closeModal }}" hint-size="90px,46px">إلغاء</x-import>
+        </div>
+
+        <sc-if value="{{ hasReviews }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:24px;padding-top:20px;border-top:1px solid var(--border-default);display:flex;flex-direction:column;gap:12px">
+            <div style="font-size:13px;font-weight:500;color:var(--text-secondary)">تقييمات سابقة</div>
+            <sc-for list="{{ reviews }}" as="rv" hint-placeholder-count="2">
+              <div style="display:flex;flex-direction:column;gap:4px;background:var(--surface-sunken);border-radius:var(--radius-md);padding:12px 16px">
+                <div style="display:flex;gap:10px;align-items:center">
+                  <span style="font-size:14px;color:var(--color-orange-500);letter-spacing:1px">{{ rv.starText }}</span>
+                  <span style="font-size:12px;font-weight:300;color:var(--text-muted)">{{ rv.meta }}</span>
+                </div>
+                <sc-if value="{{ rv.hasComment }}" hint-placeholder-val="{{ true }}">
+                  <div style="font-size:14px;font-weight:300;line-height:var(--leading-relaxed);color:var(--text-secondary)">{{ rv.comment }}</div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ suggestOpen }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeModal }}" style="position:fixed;inset:0;background:oklch(0.15 0.04 267/.45);display:flex;align-items:center;justify-content:center;padding:24px;z-index:50">
+      <div onClick="{{ stop }}" dir="rtl" style="background:var(--surface-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-lg);width:100%;max-width:460px;padding:24px;animation:popIn var(--duration-base) var(--ease-standard);font-family:var(--font-body);color:var(--text-primary)">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+          <div style="font-size:20px;font-weight:700">اقتراح مكان جديد</div>
+          <span onClick="{{ closeModal }}" style="cursor:pointer;color:var(--text-muted);font-size:20px;line-height:1">×</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:16px;margin-bottom:24px">
+          <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text-secondary)">
+            اسم المكان
+            <input value="{{ newName }}" onChange="{{ onNewName }}" placeholder="اسم المطعم أو الاستراحة" style="font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border-strong);color:var(--text-primary);background:var(--surface-page);outline:none">
+          </label>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <span style="font-size:13px;color:var(--text-secondary)">التصنيف</span>
+            <div style="display:flex;gap:8px">
+              <sc-for list="{{ newCatOpts }}" as="c" hint-placeholder-count="2">
+                <button onClick="{{ c.onClick }}" style="cursor:pointer;padding:10px 20px;border-radius:var(--radius-md);font-size:14px;font-weight:500;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }}">{{ c.label }}</button>
+              </sc-for>
+            </div>
+          </div>
+          <label style="display:flex;flex-direction:column;gap:6px;font-size:13px;color:var(--text-secondary)">
+            رابط الموقع على الخرائط
+            <input dir="ltr" value="{{ newUrl }}" onChange="{{ onNewUrl }}" placeholder="https://maps.app.goo.gl/…" style="font-size:14px;padding:10px 12px;border-radius:var(--radius-md);border:1px solid var(--border-strong);color:var(--text-primary);background:var(--surface-page);outline:none;text-align:left">
+          </label>
+        </div>
+        <div style="display:flex;gap:10px">
+          <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="primary" size="lg" on-click="{{ submitSuggestion }}" hint-size="150px,46px">{{ suggestLabel }}</x-import>
+          <x-import component-from-global-scope="ElmDesignSystem_d74325.Button" variant="ghost" size="lg" on-click="{{ closeModal }}" hint-size="90px,46px">إلغاء</x-import>
+        </div>
+      </div>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ toast }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;bottom:28px;left:28px;z-index:60;animation:popIn var(--duration-base) var(--ease-standard)">
+      <x-import component-from-global-scope="ElmDesignSystem_d74325.Toast" tone="navy" message="{{ toast }}" hint-size="260px,48px"></x-import>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;formUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ربط Google Form&quot;},&quot;fieldPlace&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;entry.1000001&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ربط Google Form&quot;},&quot;fieldStars&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;entry.1000002&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ربط Google Form&quot;},&quot;fieldRepeat&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;entry.1000003&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ربط Google Form&quot;},&quot;fieldComment&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;entry.1000004&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;ربط Google Form&quot;}}">
+const PLACES = [
+  {id:'p1',name:'شاليهات أورشا',en:'Orsha Chalets',cat:'استراحة',url:'https://www.google.com/maps/place/%D8%B4%D8%A7%D9%84%D9%8A%D9%87%D8%A7%D8%AA+%D8%A3%D9%88%D8%B1%D8%B4%D8%A7/@24.8441652,46.5995518,181m/data=!3m1!1e3'},
+  {id:'p2',name:'استراحة الروشن',en:'Al Rawshan Rest House',cat:'استراحة',url:'https://maps.app.goo.gl/M6To47ou1htgWvG99?g_st=ic'},
+  {id:'p3',name:'استراحة الوادي',en:'Al Wadi Rest House',cat:'استراحة',url:'https://maps.app.goo.gl/DkHxEZcKjSEYyKMr6?g_st=ic'},
+  {id:'p4',name:'استراحة تل الشمال',en:'Tal Al Shamal Rest House',cat:'استراحة',url:'https://maps.app.goo.gl/2qWX87kcsU2j69ef8?g_st=ic'},
+  {id:'p5',name:'استراحة العائلة',en:'Al Aila Rest House',cat:'استراحة',url:'https://maps.app.goo.gl/MP9EB1CoebiZWy7Z9?g_st=ic'},
+  {id:'p6',name:'استراحة القيروان',en:'Al Qairawan Rest House',cat:'استراحة',url:'https://gathern.co/link/view?id=108640'},
+  {id:'p7',name:'استراحة سمو',en:'Sumou Events',cat:'استراحة',url:'https://www.google.com/maps/place/%D8%B3%D9%85%D9%88+%D9%84%D9%84%D9%85%D9%86%D8%A7%D8%B3%D8%A8%D8%A7%D8%AA/@24.8540088,46.6110966,723m/data=!3m2!1e3!4b1'},
+  {id:'p8',name:'استراحة الياسمين',en:'Al Yasmin Rest House',cat:'استراحة',url:'https://www.google.com/maps/dir/24.740876,46.638855/24.878222,46.61473'},
+  {id:'p9',name:'استراحة القيروان 2',en:'Al Qairawan Rest House 2',cat:'استراحة',url:'https://www.tiktok.com/@riyad_villa?_r=1&_t=ZS-99ru4hhhXEX'},
+  {id:'p10',name:'أبو تركي قهوة وشاهي',en:'Abu Turki Coffee & Tea',cat:'مطعم',phone:'0553927141'},
+  {id:'p11',name:'ببلك',en:'Public',cat:'مطعم',url:'https://maps.app.goo.gl/ek5xmPh9n2g6xRce7?g_st=ic'},
+  {id:'p12',name:'بيت ورد',en:'Bait Ward',cat:'مطعم',url:'https://maps.app.goo.gl/qR4iCVmZugpfNKX3A?g_st=ic'},
+  {id:'p13',name:'ام شريف',en:'Om Sherif',cat:'مطعم',url:'https://maps.app.goo.gl/QQvgSH5TqbpGZ3Mh7?g_st=ic'},
+  {id:'p14',name:'انتركوت',en:'Entrecote',cat:'مطعم',url:'https://maps.app.goo.gl/u43Ts9CaYKQWQGSL6?g_st=ic'},
+  {id:'p15',name:'مادموزيل',en:'Mademoiselle',cat:'مطعم',url:'https://maps.app.goo.gl/28URub4Qm2xCQC6D8?g_st=ic'},
+  {id:'p16',name:'عسيب',en:'Aseeb',cat:'مطعم',url:'https://maps.app.goo.gl/Ha3biYoDjqSFGw5E7?g_st=ic'},
+  {id:'p17',name:'جون وڤينيز',en:'John & Venies',cat:'مطعم',url:'https://maps.app.goo.gl/KKTdPpC57ZCGiWAh6?g_st=ic'},
+  {id:'p18',name:'سنيور ساسي',en:'Signor Sassi',cat:'مطعم',url:'https://maps.app.goo.gl/LBYnSdNnwLjryoqq9?g_st=ic'},
+  {id:'p19',name:'برج الحمام',en:'Burj Al Hamam',cat:'مطعم',url:'https://maps.app.goo.gl/BEECSvnFgVTxYeRo6?g_st=ic'},
+  {id:'p20',name:'بلو جاردن',en:'Blue Garden',cat:'مطعم',url:'https://maps.google.com?q=Blue%20Garden%20Riyadh,%202662%20Al%20Housn,%20An%20Nakheel,%20Riyadh%2012385'},
+  {id:'p21',name:'هبره',en:'Habra',cat:'مطعم',url:'https://maps.google.com?q=HABRA,%20Northern%20Ring%20Br%20Rd,%20MEFIC%20center,%20Riyadh%2012385'},
+  {id:'p22',name:'اسكودار',en:'Uskudar',cat:'مطعم',url:'https://maps.app.goo.gl/MgXEt4aCmXJK5TgY9?g_st=ic'},
+  {id:'p23',name:'لوسين',en:'Lucine',cat:'مطعم',url:'https://maps.app.goo.gl/qq5fj9QtxL5JTB7K6?g_st=ic'},
+  {id:'p24',name:'وافي غورميه',en:'Wafi Gourmet',cat:'مطعم',url:'https://maps.app.goo.gl/uaUGm7Lp1GF18AcS7?g_st=ic'}
+];
+const KEY = 'elm-lunch-guide-v1';
+const stars = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+
+class Component extends DCLogic {
+  state = {
+    ratings: {}, extra: [], query: '', filter: 'all', sort: 'top',
+    rateOpen: false, suggestOpen: false, activeId: null,
+    picked: 0, repeat: null, comment: '',
+    newName: '', newCat: 'مطعم', newUrl: '', toast: ''
+  };
+
+  componentDidMount() {
+    try {
+      const raw = localStorage.getItem(KEY);
+      if (raw) { const d = JSON.parse(raw); this.setState({ ratings: d.ratings || {}, extra: d.extra || [] }); }
+    } catch (e) {}
+  }
+
+  persist(ratings, extra) {
+    try { localStorage.setItem(KEY, JSON.stringify({ ratings, extra })); } catch (e) {}
+  }
+
+  flash(msg) {
+    this.setState({ toast: msg });
+    clearTimeout(this._t);
+    this._t = setTimeout(() => this.setState({ toast: '' }), 3200);
+  }
+
+  allPlaces() { return PLACES.concat(this.state.extra); }
+
+  f(name, fallback) { return this.props[name] || fallback; }
+
+  sendToForm(fields) {
+    const base = (this.props.formUrl || '').trim();
+    if (!base) return false;
+    const url = new URL(base.replace(/\/viewform.*$/, '/viewform'));
+    Object.keys(fields).forEach(k => { if (k) url.searchParams.set(k, fields[k]); });
+    url.searchParams.set('usp', 'pp_url');
+    window.open(url.toString(), '_blank', 'noopener');
+    return true;
+  }
+
+  submitRating = () => {
+    const { activeId, picked, repeat, comment, ratings } = this.state;
+    if (!picked) { this.flash('اختر عدد النجوم أولاً'); return; }
+    const place = this.allPlaces().find(p => p.id === activeId);
+    const entry = { stars: picked, repeat, comment: comment.trim(), ts: Date.now() };
+    const next = Object.assign({}, ratings, { [activeId]: (ratings[activeId] || []).concat([entry]) });
+    this.persist(next, this.state.extra);
+    const sent = this.sendToForm({
+      [this.f('fieldPlace', 'entry.1000001')]: place ? place.name : '',
+      [this.f('fieldStars', 'entry.1000002')]: String(picked),
+      [this.f('fieldRepeat', 'entry.1000003')]: repeat === true ? 'نكررها' : repeat === false ? 'لا نكررها' : '',
+      [this.f('fieldComment', 'entry.1000004')]: entry.comment
+    });
+    this.setState({ ratings: next, rateOpen: false, picked: 0, repeat: null, comment: '' });
+    this.flash(sent ? 'تم حفظ التقييم — أكمل الإرسال في النموذج المفتوح' : 'تم حفظ تقييمك');
+  };
+
+  submitSuggestion = () => {
+    const { newName, newCat, newUrl, extra } = this.state;
+    if (!newName.trim()) { this.flash('اكتب اسم المكان'); return; }
+    const item = { id: 'x' + Date.now(), name: newName.trim(), en: '', cat: newCat, url: newUrl.trim(), suggested: true };
+    const nextExtra = extra.concat([item]);
+    this.persist(this.state.ratings, nextExtra);
+    const sent = this.sendToForm({
+      [this.f('fieldPlace', 'entry.1000001')]: item.name,
+      [this.f('fieldComment', 'entry.1000004')]: 'اقتراح مكان جديد — ' + newCat + (item.url ? ' — ' + item.url : '')
+    });
+    this.setState({ extra: nextExtra, suggestOpen: false, newName: '', newUrl: '', newCat: 'مطعم' });
+    this.flash(sent ? 'تمت الإضافة — أكمل الإرسال في النموذج المفتوح' : 'تمت إضافة المكان للقائمة');
+  };
+
+  renderVals() {
+    const s = this.state;
+    const all = this.allPlaces();
+    const q = s.query.trim();
+    let list = all.filter(p => {
+      if (s.filter === 'rest' && p.cat !== 'استراحة') return false;
+      if (s.filter === 'food' && p.cat !== 'مطعم') return false;
+      if (q && !(p.name.includes(q) || (p.en || '').toLowerCase().includes(q.toLowerCase()))) return false;
+      return true;
+    });
+    const avgOf = id => {
+      const rs = s.ratings[id] || [];
+      if (!rs.length) return null;
+      return rs.reduce((a, r) => a + r.stars, 0) / rs.length;
+    };
+    if (s.sort === 'top') list = list.slice().sort((a, b) => (avgOf(b.id) || -1) - (avgOf(a.id) || -1));
+    else list = list.slice().sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+
+    const rows = list.map(p => {
+      const avg = avgOf(p.id);
+      const count = (s.ratings[p.id] || []).length;
+      return {
+        name: p.name, en: p.en || '', category: p.cat,
+        tone: p.cat === 'استراحة' ? 'blue' : 'purple',
+        starText: avg ? stars(Math.round(avg)) : '☆☆☆☆☆',
+        avgText: avg ? avg.toFixed(1) : '—',
+        countText: count ? count + ' تقييم' : 'لا توجد تقييمات بعد',
+        hasLink: !!p.url, url: p.url || '#',
+        hasPhone: !!p.phone, phone: p.phone || '',
+        onRate: () => this.setState({ rateOpen: true, activeId: p.id, picked: 0, repeat: null, comment: '' })
+      };
+    });
+
+    const mk = (label, val, key, cur) => ({
+      label,
+      bg: cur === val ? 'var(--surface-page)' : 'transparent',
+      fg: cur === val ? 'var(--text-primary)' : 'var(--text-secondary)',
+      onClick: () => this.setState({ [key]: val })
+    });
+
+    const active = all.find(p => p.id === s.activeId);
+    const revs = (s.ratings[s.activeId] || []).slice().reverse();
+
+    return {
+      showFormNotice: !(this.props.formUrl || '').trim(),
+      query: s.query,
+      onQuery: e => this.setState({ query: e.target.value }),
+      filters: [mk('الكل', 'all', 'filter', s.filter), mk('مطاعم', 'food', 'filter', s.filter), mk('استراحات', 'rest', 'filter', s.filter)],
+      sorts: [mk('الأعلى تقييماً', 'top', 'sort', s.sort), mk('أبجدي', 'az', 'sort', s.sort)],
+      rows, isEmpty: rows.length === 0,
+      openSuggest: () => this.setState({ suggestOpen: true }),
+      rateOpen: s.rateOpen, suggestOpen: s.suggestOpen,
+      closeModal: () => this.setState({ rateOpen: false, suggestOpen: false }),
+      stop: e => e.stopPropagation(),
+      activeName: active ? active.name : '',
+      starPicker: [1, 2, 3, 4, 5].map(n => ({
+        color: n <= s.picked ? 'var(--color-orange-500)' : 'var(--border-strong)',
+        onClick: () => this.setState({ picked: n })
+      })),
+      pickedLabel: s.picked ? ['ضعيف', 'مقبول', 'جيد', 'ممتاز', 'رائع'][s.picked - 1] : 'اختر التقييم',
+      repeatOpts: [{ label: 'نعم، نكررها', v: true }, { label: 'لا', v: false }].map(o => ({
+        label: o.label,
+        border: s.repeat === o.v ? 'var(--color-navy-900)' : 'var(--border-strong)',
+        bg: s.repeat === o.v ? 'var(--color-navy-900)' : 'var(--surface-page)',
+        fg: s.repeat === o.v ? 'var(--color-white)' : 'var(--text-secondary)',
+        onClick: () => this.setState({ repeat: o.v })
+      })),
+      comment: s.comment,
+      onComment: e => this.setState({ comment: e.target.value }),
+      submitLabel: (this.props.formUrl || '').trim() ? 'إرسال التقييم' : 'حفظ التقييم',
+      submitRating: this.submitRating,
+      hasReviews: revs.length > 0,
+      reviews: revs.map(r => ({
+        starText: stars(r.stars),
+        meta: (r.repeat === true ? 'نكررها · ' : r.repeat === false ? 'لا نكررها · ' : '') + new Date(r.ts).toLocaleDateString('ar-SA'),
+        hasComment: !!r.comment, comment: r.comment
+      })),
+      newName: s.newName, newUrl: s.newUrl,
+      onNewName: e => this.setState({ newName: e.target.value }),
+      onNewUrl: e => this.setState({ newUrl: e.target.value }),
+      newCatOpts: ['مطعم', 'استراحة'].map(c => ({
+        label: c,
+        border: s.newCat === c ? 'var(--color-navy-900)' : 'var(--border-strong)',
+        bg: s.newCat === c ? 'var(--color-navy-900)' : 'var(--surface-page)',
+        fg: s.newCat === c ? 'var(--color-white)' : 'var(--text-secondary)',
+        onClick: () => this.setState({ newCat: c })
+      })),
+      suggestLabel: (this.props.formUrl || '').trim() ? 'إرسال الاقتراح' : 'إضافة المكان',
+      submitSuggestion: this.submitSuggestion,
+      toast: s.toast
+    };
+  }
+}
+</script>
+</body>
+</html>
